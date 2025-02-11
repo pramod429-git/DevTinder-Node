@@ -1,27 +1,36 @@
 const express = require("express");
 const { use } = require("react");
+const { connectDB } = require("./config/database");
 
 //calling function or creating instance of express to access its method of express
 const app = express();
 
-const { authAdmin, authUser } = require("./middlewares/auth");
+connectDB()
+  .then(() => {
+    console.log("data base connected successfully!!");
+    app.listen(7777, () =>
+      console.log("connecting to server port number 7777")
+    );
+  })
+  .catch((err) => {
+    console.log(`something went wrong ${err}`);
+  });
 
-app.use("/admin", authAdmin);
-
-app.use("/admin/getAllData", (req, res) => {
-  res.send("get all data");
+app.get("/", (req, res) => {
+  res.send("hello");
 });
 
-app.use("/admin/deleteData", (req, res) => {
-  res.send("delete data");
-});
+// app.use("/userData", (req, res) => {
+//   try {
+//     throw new Error("ahsn");
+//     res.send("User Data");
+//   } catch (err) {
+//     res.status(500).send(`${err.message} => some error contact support team `);
+//   }
+// });
 
-app.use("/user/login", (req, res) => {
-  res.send("user logged");
-});
-
-app.use("/user", authUser, (req, res) => {
-  res.send("hi user");
-});
-
-app.listen(7777, () => "connecting to server port number 7777");
+// app.use("/", (err, req, res, next) => {
+//   if (err) {
+//     res.send("something went wrong");
+//   }
+// });
