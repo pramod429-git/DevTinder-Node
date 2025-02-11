@@ -5,13 +5,20 @@ const app = express();
 
 //to give response we have to give request handler
 
-app.use("/hello", (req, res) => {
-  res.send("Hi this from servers hello");
+// app.use("/user", (req, res) => {
+//   res.send("hahahahaha");
+// });
+
+app.get("/user", (req, res) => {
+  res.send("Hi this from server");
 });
 
-// request handler to hander request localhost:7777/path route
-app.use("/path", (req, res) => {
-  res.send("Hi this from server /path");
+app.post("/user", (req, res) => {
+  res.send("data is save successfully!");
+});
+
+app.delete("/user", (req, res) => {
+  res.send("data is deleted successfully!");
 });
 
 app.listen(7777, () => "connecting to server port number 7777");
