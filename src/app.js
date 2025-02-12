@@ -1,9 +1,23 @@
 const express = require("express");
-const { use } = require("react");
 const { connectDB } = require("./config/database");
+const User = require("./models/user");
 
 //calling function or creating instance of express to access its method of express
 const app = express();
+
+app.use(express.json());
+
+app.post("/signup", async (req, res) => {
+  const user = new User(req.body);
+
+  try {
+    await user.save();
+    res.send("data is added to data base successfully");
+    console.log("added");
+  } catch (error) {
+    res.status(400).send(`Band request =>${error.message}`);
+  }
+});
 
 connectDB()
   .then(() => {
@@ -15,22 +29,3 @@ connectDB()
   .catch((err) => {
     console.log(`something went wrong ${err}`);
   });
-
-app.get("/", (req, res) => {
-  res.send("hello");
-});
-
-// app.use("/userData", (req, res) => {
-//   try {
-//     throw new Error("ahsn");
-//     res.send("User Data");
-//   } catch (err) {
-//     res.status(500).send(`${err.message} => some error contact support team `);
-//   }
-// });
-
-// app.use("/", (err, req, res, next) => {
-//   if (err) {
-//     res.send("something went wrong");
-//   }
-// });
