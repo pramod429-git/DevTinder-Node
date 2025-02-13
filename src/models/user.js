@@ -1,7 +1,5 @@
-const {
-  type,
-} = require("@testing-library/user-event/dist/cjs/utility/type.js");
 const mongoose = require("mongoose");
+const validatePackage = require("validator");
 
 const userSchema = mongoose.Schema(
   {
@@ -24,6 +22,11 @@ const userSchema = mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      validate(value) {
+        if (!validatePackage.isEmail(value)) {
+          throw new Error("not a valid EmailId: " + value);
+        }
+      },
     },
     password: {
       type: String,
@@ -31,6 +34,11 @@ const userSchema = mongoose.Schema(
       trim: true,
       minLength: 4,
       maxlength: 20,
+      validate(value) {
+        if (!validatePackage.isStrongPassword(value)) {
+          throw new Error("your password is weak: " + value);
+        }
+      },
     },
     age: {
       type: Number,
@@ -54,13 +62,19 @@ const userSchema = mongoose.Schema(
       default: "simply cool",
       trim: true,
       minLength: 4,
-      maxlength: 20,
+      maxlength: 50,
     },
     photoUrl: {
       type: String,
       default:
         "https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2247726673.jpg",
       trim: true,
+      maxlength: 100,
+      validate(value) {
+        if (!validatePackage.isURL(value)) {
+          throw new Error("invalid Photo url: " + value);
+        }
+      },
     },
     skills: {
       type: [String],
