@@ -14,9 +14,11 @@
   "author": "Pramod",
   "license": "ISC",
   "dependencies": {
+    "dev-tinder": "file:",
     "express": "^4.21.2",
     "install": "^0.13.0",
     "mongoose": "^8.10.0",
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "validator": "^13.12.0"
   }
 }
