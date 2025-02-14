@@ -2,10 +2,9 @@ const express = require("express");
 const { connectDB } = require("./config/database");
 const User = require("./models/user");
 const { validateSignUp } = require("./utils/validattion");
-const bcrypt = require("bcrypt");
+
 const validator = require("validator");
 const cookie = require("cookie-parser");
-const jwt = require("jsonwebtoken");
 const { authUser } = require("./middlewares/auth");
 
 //calling function or creating instance of express to access its method of express
@@ -85,12 +84,10 @@ app.post("/login", async (req, res) => {
       throw new Error("enter a correct emailId");
     }
 
-    //async operation so await
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    //token will expire after 7 days
-    const token = await jwt.sign({ _id: user._id }, "dev@tinder", {
-      expiresIn: "7d",
-    });
+    //async operation so await hashing or bcrypt
+    const isValidPassword = await user.ValidPassword(password);
+    //token creatin and  will expire after 7 days
+    const token = await user.getJwt();
 
     if (!isValidPassword) {
       throw new Error("invalid credential");
