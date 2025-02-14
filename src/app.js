@@ -1,12 +1,19 @@
 const express = require("express");
 const { connectDB } = require("./config/database");
 const User = require("./models/user");
-const { ReturnDocument } = require("mongodb");
+const { validateSignUp } = require("./utils/validattion");
+const bcrypt = require("bcrypt");
+const validator = require("validator");
+const cookie = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const { authUser } = require("./middlewares/auth");
 
 //calling function or creating instance of express to access its method of express
 const app = express();
 
 app.use(express.json());
+
+app.use(cookie());
 
 //find the document based on user emailId
 app.get("/user", async (req, res) => {
@@ -43,14 +50,77 @@ app.get("/feed", async (req, res) => {
 
 // add the data to database
 app.post("/signup", async (req, res) => {
-  const userData = req.body; // read the request
-  const user = new User(userData);
+  const { firstName, lastName, emailId, password, gender } = req.body; // read the request
   try {
+    //validation
+    validateSignUp(req);
+    //encrypt the password
+    const passwordHash = await bcrypt.hash(password, 10);
+    //console.log(firstName, lastName, emailId, { password: passwordHash });
+    // save to db
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      gender,
+      password: passwordHash,
+    });
     await user.save();
     res.send("data is added to data base successfully");
     console.log("added");
   } catch (error) {
     res.status(400).send(`Band request =>${error.message}`);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    if (!validator.isEmail(emailId)) {
+      throw new Error("enter a correct emailId");
+    }
+
+    //async operation so await
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    //token will expire after 7 days
+    const token = await jwt.sign({ _id: user._id }, "dev@tinder", {
+      expiresIn: "7d",
+    });
+
+    if (!isValidPassword) {
+      throw new Error("invalid credential");
+    } else {
+      //using express sending cookie with cookie key word
+      res.cookie("token", token, {
+        expires: new Date(Date.now() + 8 * 3600000),
+      }); //cookis will expire after 8 hrs
+      res.send("login successfully!!");
+    }
+  } catch (err) {
+    res.status(400).send("Error: " + err.message);
+  }
+});
+
+app.get("/profile", authUser, async (req, res) => {
+  try {
+    const user = req.user;
+    res.send("profile loadded successfully \n" + user);
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+});
+
+app.post("/sendConnectionRequest", authUser, async (req, res) => {
+  try {
+    const user = req.user;
+    res.send(user.firstName + " sent a connection request!!");
+  } catch (err) {
+    res.status(400).send("ERROR: " + err.message);
   }
 });
 
