@@ -100,4 +100,8 @@ userSchema.methods.getJwt = async function () {
   return token;
 };
 
+// const User=new mongoose.model("User",userSchema);
+
+// module.exports=User;
+
 module.exports = mongoose.model("User", userSchema);
