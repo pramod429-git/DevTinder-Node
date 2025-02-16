@@ -14,7 +14,7 @@ router.post("/request/send/:status/:userId", authUser, async (req, res) => {
 
     //here i want validation for request is either Intrested or Ignored
 
-    const allowedStatus = ["Intrested", "Ignored"];
+    const allowedStatus = ["Interested", "Ignored"];
 
     if (!allowedStatus.includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
@@ -50,5 +50,33 @@ router.post("/request/send/:status/:userId", authUser, async (req, res) => {
     res.status(400).send("ERROR: " + err.message);
   }
 });
+
+router.post(
+  "/request/review/:status/:requestId",
+  authUser,
+  async (req, res) => {
+    try {
+      const { status, requestId } = req.params;
+      const allowedStatus = ["Accepted", "Rejected"];
+      if (!allowedStatus.includes(status)) {
+        return res.status(400).json({ message: "Invalid Status" });
+      }
+      const loggedInUserId = req.user._id;
+      const connectionRequestUser = await ConnectionRequest.findOne({
+        toUserId: loggedInUserId,
+        _id: requestId,
+        status: "Interested",
+      });
+      if (!connectionRequestUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      connectionRequestUser.status = status;
+      const data = await connectionRequestUser.save();
+      res.json({ message: "Request Accepted!!", data });
+    } catch (err) {
+      res.status(400).send("Error : " + err.message);
+    }
+  }
+);
 
 module.exports = router;

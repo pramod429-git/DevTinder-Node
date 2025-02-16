@@ -10,9 +10,7 @@ router.post("/signup", async (req, res) => {
   const { firstName, lastName, emailId, password, gender } = req.body; // read the request
   try {
     //validation
-    if (!validateSignUp(req)) {
-      throw new Error("invalid data");
-    }
+    validateSignUp(req);
     //encrypt the password
     const passwordHash = await bcrypt.hash(password, 10);
     //console.log(firstName, lastName, emailId, { password: passwordHash });
