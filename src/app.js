@@ -5,6 +5,7 @@ const cookie = require("cookie-parser");
 const authRoute = require("./routes/authRoute");
 const profileRoute = require("./routes/profileRoute");
 const requestRoute = require("./routes/requestRoute");
+const userRoute = require("./routes/userRoute");
 
 //calling function or creating instance of express to access its method of express
 const app = express();
@@ -16,6 +17,7 @@ app.use(cookie());
 app.use("/", authRoute);
 app.use("/", profileRoute);
 app.use("/", requestRoute);
+app.use("/", userRoute);
 
 connectDB()
   .then(() => {
