@@ -1,6 +1,6 @@
 const express = require("express");
 const User = require("../models/user");
-const { validateSignUp } = require("../utils/validattion");
+const { validateSignUp, validateLogin } = require("../utils/validattion");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const router = express.Router();
@@ -32,6 +32,7 @@ router.post("/signup", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
+    validateLogin(req);
     const { emailId, password } = req.body;
 
     const user = await User.findOne({ emailId: emailId });
@@ -54,7 +55,7 @@ router.post("/login", async (req, res) => {
       res.cookie("token", token, {
         expires: new Date(Date.now() + 8 * 3600000),
       }); //cookis will expire after 8 hrs
-      res.send("login successfully!!");
+      res.json({ message: "login successfully!!", data: user });
     }
   } catch (err) {
     res.status(400).send("Error: " + err.message);

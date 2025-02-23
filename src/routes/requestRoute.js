@@ -28,8 +28,8 @@ router.post("/request/send/:status/:userId", authUser, async (req, res) => {
 
     const existingConnectionRequest = await ConnectionRequest.findOne({
       $or: [
-        { fromUserId, toUserId },
-        { fromUserId: toUserId, toUserId: fromUserId },
+        { fromUserId, toUserId }, //already sent do not send once again
+        { fromUserId: toUserId, toUserId: fromUserId }, //already connected not send
       ],
     });
     if (existingConnectionRequest) {

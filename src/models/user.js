@@ -71,7 +71,6 @@ const userSchema = mongoose.Schema(
       default:
         "https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2247726673.jpg",
       trim: true,
-      maxlength: 100,
       validate(value) {
         if (!validatePackage.isURL(value)) {
           throw new Error("invalid Photo url: " + value);

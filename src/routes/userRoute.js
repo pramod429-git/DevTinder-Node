@@ -2,7 +2,7 @@ const express = require("express");
 const { authUser } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 const router = express.Router();
-const USER_SAVE_DATA = "firstName lastName age gender skills";
+const USER_SAVE_DATA = "firstName lastName age gender skills photoUrl about";
 const User = require("../models/user");
 
 router.get("/user/review/received", authUser, async (req, res) => {
@@ -11,7 +11,7 @@ router.get("/user/review/received", authUser, async (req, res) => {
     const connectionRequest = await ConnectionRequest.find({
       toUserId: loggedInUser._id,
       status: "Interested",
-    }).populate("fromUserId", ["firstName", "lastName"]);
+    }).populate("fromUserId", USER_SAVE_DATA);
     if (!connectionRequest) {
       return res.status(400).send("invalid request");
     }

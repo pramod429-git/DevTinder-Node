@@ -11,6 +11,18 @@ const validateSignUp = (req) => {
   }
 };
 
+const validateLogin = (req) => {
+  const { emailId, password } = req.body;
+
+  if (!(emailId && password)) {
+    throw new Error("field cannot be empty");
+  } else if (!validator.isEmail(emailId)) {
+    throw new Error("invalid emailId");
+  } else if (!validator.isStrongPassword(password)) {
+    throw new Error("not a strong password");
+  }
+};
+
 const validateEditProfile = (req) => {
   if (!req.age) {
     throw new Error("field cannot be empty");
@@ -31,6 +43,7 @@ const validateForgotPassword = (req) => {
 };
 module.exports = {
   validateSignUp,
+  validateLogin,
   validateEditProfile,
   validateForgotPassword,
 };
