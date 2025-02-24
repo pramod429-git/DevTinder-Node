@@ -88,7 +88,7 @@ router.get("/feed", authUser, async (req, res) => {
 
     res.send(user);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(401).json({ message: err.message });
   }
 });
 

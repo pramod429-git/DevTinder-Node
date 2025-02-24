@@ -15,7 +15,7 @@ router.get("/profile/view", authUser, async (req, res) => {
     const user = req.user;
     res.json({ message: "profile loadded successfully!!", data: user });
   } catch (err) {
-    res.status(400).send(err.message);
+    res.status(401).send(err.message);
   }
 });
 

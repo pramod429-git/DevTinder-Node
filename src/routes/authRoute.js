@@ -22,8 +22,15 @@ router.post("/signup", async (req, res) => {
       gender,
       password: passwordHash,
     });
-    await user.save();
-    res.send("data is added to data base successfully");
+    const savedUser = await user.save();
+    const token = await savedUser.getJwt();
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 3600000),
+    });
+    res.json({
+      message: "data is added to data base successfully",
+      data: savedUser,
+    });
     console.log("added");
   } catch (error) {
     res.status(400).send(`Band request =>${error.message}`);
@@ -58,7 +65,7 @@ router.post("/login", async (req, res) => {
       res.json({ message: "login successfully!!", data: user });
     }
   } catch (err) {
-    res.status(400).send("Error: " + err.message);
+    res.status(401).send("Error: " + err.message);
   }
 });
 
