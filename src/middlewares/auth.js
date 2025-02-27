@@ -8,7 +8,7 @@ const authUser = async (req, res, next) => {
       throw new Error(`User Logged out`);
     }
     //validate the cookie
-    const decoadedValue = await jwt.verify(token, "dev@tinder");
+    const decoadedValue = await jwt.verify(token, process.env.JWT_SECRET);
     const { _id } = decoadedValue;
     const user = await User.findById(_id);
     if (!user) {

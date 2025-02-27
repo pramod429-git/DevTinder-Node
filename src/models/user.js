@@ -93,7 +93,7 @@ userSchema.methods.ValidPassword = async function (UserInputPassword) {
 //helper method used for create token all users
 userSchema.methods.getJwt = async function () {
   const user = this;
-  const token = await jwt.sign({ _id: user._id }, "dev@tinder", {
+  const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
   return token;
