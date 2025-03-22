@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const validatePackage = require("validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { membershipAmount } = require("../utils/constants");
 
 const userSchema = mongoose.Schema(
   {
@@ -80,6 +81,13 @@ const userSchema = mongoose.Schema(
     skills: {
       type: [String],
       trim: true,
+    },
+    isPremium: {
+      type: Boolean,
+      default: false,
+    },
+    membershipType: {
+      type: String,
     },
   },
   { timestamps: true }

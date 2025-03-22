@@ -44,11 +44,11 @@ router.post("/request/send/:status/:userId", authUser, async (req, res) => {
     });
     const data = await connectionRequest.save();
 
-    const resEmail = await sendEmail.run(
-      `Notification from DevTinder`,
-      `You ${status} ${toUserName} profile`
-    );
-    console.log(resEmail);
+    // const resEmail = await sendEmail.run(
+    //   `Notification from DevTinder`,
+    //   `You ${status} ${toUserName} profile`
+    // );
+    // console.log(resEmail);
 
     res.json({
       message: `${user.firstName} ${status} ${toUserName} profile `,

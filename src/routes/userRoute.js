@@ -41,7 +41,7 @@ router.get("/user/connections", authUser, async (req, res) => {
       }
       return row.fromUserId;
     });
-    console.log(data);
+    //console.log(data);
 
     if (!connectionRequest) {
       throw new Error("Invalid request");
